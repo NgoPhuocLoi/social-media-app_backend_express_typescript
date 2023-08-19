@@ -17,6 +17,20 @@ class UserController {
       metadata: await UserService.updateUserInfo(userId, req.body),
     }).send(res);
   }
+
+  static async follow(req: Request, res: Response) {
+    new OKResponse({
+      message: "Following successfully!",
+      metadata: await UserService.follow(req.body),
+    }).send(res);
+  }
+
+  static async unfollow(req: Request, res: Response) {
+    new OKResponse({
+      message: "Unfollowing successfully!",
+      metadata: await UserService.unfollow(req.body),
+    }).send(res);
+  }
 }
 
 export default UserController;
