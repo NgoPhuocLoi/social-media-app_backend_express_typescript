@@ -1,8 +1,17 @@
-import express, { Express, Request, Response } from "express";
-import router from "./routes"
+import express, { Express } from "express";
+import MongoDB from "./config/mongodb";
+import { errorHandler, handleNotFoundRoute } from "./middlewares";
+import router from "./routes";
 
 const app: Express = express();
 
-app.use(router)
+MongoDB.getInstance();
 
-export default app
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(router);
+app.use(handleNotFoundRoute);
+app.use(errorHandler);
+
+export default app;
