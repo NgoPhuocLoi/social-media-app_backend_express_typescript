@@ -1,5 +1,27 @@
 import { UserModel } from "../";
 
+export const increasePostNumByUserId = async (userId: string) => {
+  return await UserModel.updateOne(
+    { _id: userId },
+    {
+      $inc: {
+        postNum: 1,
+      },
+    }
+  );
+};
+
+export const decreasePostNumByUserId = async (userId: string) => {
+  return await UserModel.updateOne(
+    { _id: userId },
+    {
+      $inc: {
+        postNum: -1,
+      },
+    }
+  );
+};
+
 export const increaseFollowerNumByUserId = async (userId: string) => {
   return await UserModel.updateOne(
     { _id: userId },
