@@ -39,6 +39,10 @@ class PostService {
     return { posts };
   }
 
+  static async publishPost() {
+    // check and delete all images did'nt use in the imageIds before delete popst
+  }
+
   static async likePost() {}
 
   static async unLikePost() {}

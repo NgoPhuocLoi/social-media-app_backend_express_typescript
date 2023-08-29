@@ -1,7 +1,8 @@
+import slugify from "slugify";
+import { v2 as cloudinary } from "cloudinary";
 import { PostModel } from "..";
 import { CreatePostPayload } from "../../interfaces";
 import { decreasePostNumByUserId, increasePostNumByUserId } from "./user.repo";
-import slugify from "slugify";
 
 export const createNewPost = async (payload: CreatePostPayload) => {
   const newPost = await PostModel.create({
@@ -19,12 +20,16 @@ export const createNewPost = async (payload: CreatePostPayload) => {
 };
 
 export const deletePost = async (postId: string, userId: string) => {
-  const deletedPost: any = await PostModel.findByIdAndDelete(postId).lean();
-  if (deletedPost) {
+  const post = await PostModel.findById(postId).lean();
+
+  if (post) {
     await decreasePostNumByUserId(userId);
+    for (let image of post.imageIds) {
+      await cloudinary.uploader.destroy(image.id);
+    }
   }
 
-  return deletedPost;
+  return post;
 };
 
 export const getPostById = async (postId: string) => {

@@ -29,6 +29,14 @@ const postSchema = new Schema(
       type: Number,
       default: 0,
     },
+    imageIds: {
+      type: Array,
+      default: [],
+    },
+    isPublished: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

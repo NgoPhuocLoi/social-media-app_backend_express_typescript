@@ -6,7 +6,10 @@ interface HandlerParam {
 
 const asyncHandler =
   (fn: HandlerParam) => (req: Request, res: Response, next: NextFunction) => {
-    fn(req, res, next).catch(next);
+    fn(req, res, next).catch((err) => {
+      console.log(err);
+      next(err);
+    });
   };
 
 export default asyncHandler;

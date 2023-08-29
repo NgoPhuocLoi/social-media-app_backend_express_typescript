@@ -4,9 +4,10 @@ import UploadService from "../services/upload.service";
 
 class UploadController {
   static async uploadImage(req: Request, res: Response) {
-    console.log(req.body);
+    const file = req.file;
+    const postId = req.params.postId;
     new OKResponse({
-      metadata: await UploadService.uploadImage(req.body.fileBase64),
+      metadata: await UploadService.uploadImage(postId, file),
     }).send(res);
   }
 }

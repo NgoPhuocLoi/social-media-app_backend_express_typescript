@@ -1,25 +1,30 @@
 import { v2 as cloudinary } from "cloudinary";
+import { PostModel } from "../models";
+import { BadRequest } from "../cores/error.response";
 
 cloudinary.config({
   secure: true,
 });
 
 class UploadService {
-  static async uploadImage(file: any) {
-    const options = {
-      use_filename: true,
-      unique_filename: false,
-      overwrite: true,
-    };
-
-    try {
-      // Upload the image
-      const result = await cloudinary.uploader.upload(file, options);
-      console.log(result);
-      return result.public_id;
-    } catch (error) {
-      console.error(error);
+  static async uploadImage(postId: string, file: any) {
+    const post = await PostModel.findById(postId);
+    // cloudinary.uploader.
+    if (!post) {
+      await cloudinary.uploader.destroy(file.filename);
+      throw new BadRequest("Post not found!");
     }
+
+    await post.updateOne({
+      $push: {
+        imageIds: {
+          url: file.path,
+          id: file.filename,
+        },
+      },
+    });
+
+    return { link: file.path };
   }
 }
 
