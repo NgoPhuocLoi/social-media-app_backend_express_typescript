@@ -1,4 +1,4 @@
-import { User } from "../interfaces/model/user.interface";
+import { User } from "../interfaces/model";
 import { BadRequest, UnAuthorized } from "../cores/error.response";
 import { UserModel } from "../models";
 import * as argon2 from "argon2";

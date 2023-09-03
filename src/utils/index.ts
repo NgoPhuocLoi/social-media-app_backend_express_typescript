@@ -8,3 +8,13 @@ export const deleteEmptyAttribute = (obj: {
   }
   return obj;
 };
+
+export const extractLinksFromContent = (content: string) => {
+  const urlRegex = /!?\[([^\]]*)\]\(([^\)]+)\)/gm;
+  const results = content.matchAll(urlRegex);
+  const links = [];
+  for (let m of results) {
+    links.push(m[2]);
+  }
+  return links;
+};

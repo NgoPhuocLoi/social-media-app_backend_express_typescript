@@ -26,6 +26,10 @@ class UploadService {
 
     return { link: file.path };
   }
+
+  static async destroyImage(filename: string) {
+    return await cloudinary.uploader.destroy(filename);
+  }
 }
 
 export default UploadService;

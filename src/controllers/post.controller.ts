@@ -38,6 +38,35 @@ class PostController {
       metadata: await PostService.deletePost(postId, userId),
     }).send(res);
   }
+
+  static async publishPost(req: Request, res: Response) {
+    // const userId = req.user._id;
+    // const postId = req.params.postId;
+    new OKResponse({
+      metadata: await PostService.publishPost(req.body),
+    }).send(res);
+  }
+
+  static async likePost(req: Request, res: Response) {
+    const { userId, postId } = req.body;
+    new OKResponse({
+      metadata: await PostService.likePost(userId, postId),
+    }).send(res);
+  }
+
+  static async unLikePost(req: Request, res: Response) {
+    const { userId, postId } = req.body;
+    new OKResponse({
+      metadata: await PostService.unLikePost(userId, postId),
+    }).send(res);
+  }
+
+  static async getUsersLikedPost(req: Request, res: Response) {
+    const postId = req.params.postId;
+    new OKResponse({
+      metadata: await PostService.getUsersLikedPost(postId),
+    }).send(res);
+  }
 }
 
 export default PostController;
