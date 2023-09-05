@@ -1,17 +1,9 @@
-export interface CreatePostPayload {
-  userId: string;
-  title: string;
-  content: string;
-}
+export type CreatePostPayload = Pick<Post, "userId" | "content" | "title">;
 
-export interface UpdatePostPayload {
+export type UpdatePostPayload = {
   title?: string;
   content?: string;
   isPublished?: boolean;
-}
+};
 
-interface PublishPostPayload {
-  postId: string;
-  title: string;
-  content: string;
-}
+export type PublishPostPayload = Pick<Post, "postId" | "content" | "title">;

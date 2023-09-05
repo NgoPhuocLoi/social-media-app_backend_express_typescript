@@ -5,8 +5,15 @@ import {
   PublishPostPayload,
   UpdatePostPayload,
 } from "../interfaces";
-import { PostModel, UserLikePostModel, UserModel } from "../models";
+import {
+  PostModel,
+  TimelineModel,
+  UserLikePostModel,
+  UserModel,
+} from "../models";
 import * as postRepo from "../models/repositories/post.repo";
+import * as followRepo from "../models/repositories/follow.repo";
+import * as timelineRepo from "../models/repositories/timeline.repo";
 import { extractLinksFromContent } from "../utils";
 
 class PostService {
@@ -30,7 +37,12 @@ class PostService {
   static async deletePost(postId: string, userId: string) {
     const deletedPost = await postRepo.deletePost(postId, userId);
     if (!deletedPost) throw new BadRequest("Post was not existed!");
-
+    if (deletedPost.isPublished) {
+      // delete the timeline of followers
+      await TimelineModel.deleteMany({
+        postId: deletedPost._id,
+      });
+    }
     return { post: deletedPost };
   }
 
@@ -50,15 +62,15 @@ class PostService {
 
   static async publishPost(payload: PublishPostPayload) {
     // check and delete all images did'nt use in the imageIds before delete popst
-    const { postId, title, content } = payload;
-    const linksInContent = extractLinksFromContent(content);
+    let { postId, title, content } = payload;
 
     const post = await PostModel.findById(postId);
     if (!post) throw new BadRequest("Post not found!");
     if (post.isPublished)
       throw new BadRequest("This post has already been published!");
-
-    await postRepo.deleteNotUsedImages(post, linksInContent);
+    if (!title) title = post.title;
+    if (!content) content = post.content;
+    const linksInContent = extractLinksFromContent(content);
 
     const publishedPost = await this.updatePost(post._id, {
       title,
@@ -66,6 +78,10 @@ class PostService {
       isPublished: true,
     });
 
+    await postRepo.deleteNotUsedImages(post, linksInContent);
+    await timelineRepo.createTimelineForFollowersOfUser(post._id, post.userId!);
+
+    // return { post: publishedPost };
     return { post: publishedPost };
   }
 

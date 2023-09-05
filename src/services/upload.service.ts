@@ -10,6 +10,7 @@ class UploadService {
   static async uploadImage(postId: string, file: any) {
     const post = await PostModel.findById(postId);
     // cloudinary.uploader.
+    console.log("Here");
     if (!post) {
       await cloudinary.uploader.destroy(file.filename);
       throw new BadRequest("Post not found!");
@@ -28,6 +29,7 @@ class UploadService {
   }
 
   static async destroyImage(filename: string) {
+    console.log("Destrouyyyy");
     return await cloudinary.uploader.destroy(filename);
   }
 }

@@ -29,6 +29,8 @@ class UserService {
   }
 
   static async follow({ fromUserId, toUserId }: FollowParams) {
+    if (fromUserId === toUserId)
+      throw new BadRequest("Can not follow yourself!");
     const arr = await Promise.all([
       UserModel.findById(fromUserId).lean(),
       UserModel.findById(toUserId).lean(),
