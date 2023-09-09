@@ -20,3 +20,12 @@ export interface Post {
   imageIds: Array<{ id: string; url: string }>;
   isPublished: boolean;
 }
+
+export interface Comment {
+  userId: Types.ObjectId | string;
+  postId: Types.ObjectId | string;
+  content: string;
+  parentId: Types.ObjectId | string | null;
+  left: number;
+  right: number;
+}

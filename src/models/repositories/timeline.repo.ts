@@ -34,6 +34,6 @@ export const getTimelineOfUser = async (
     .sort({ createdAt: -1, _id: 1 })
     .skip(skip)
     .limit(limit)
-    .populate("postId", "-_id -userId -imageIds")
+    .populate("postId", "-userId -imageIds")
     .lean();
 };

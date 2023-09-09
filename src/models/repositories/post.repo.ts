@@ -5,6 +5,7 @@ import { CreatePostPayload } from "../../interfaces";
 import UploadService from "../../services/upload.service";
 import { decreasePostNumByUserId, increasePostNumByUserId } from "./user.repo";
 import { BadRequest } from "../../cores/error.response";
+import { Types } from "mongoose";
 
 export const createNewPost = async (payload: CreatePostPayload) => {
   const newPost = await PostModel.create({
@@ -34,7 +35,7 @@ export const deletePost = async (postId: string, userId: string) => {
   return post;
 };
 
-export const getPostById = async (postId: string) => {
+export const getPostById = async (postId: Types.ObjectId | string) => {
   return await PostModel.findById(postId)
     .populate("userId", "-password -createdAt -updatedAt")
     .lean();
@@ -85,4 +86,15 @@ export const decreasePostLikeNum = async (postId: string) => {
       likeNum: -1,
     },
   });
+};
+
+export const increaseCommentNumOfPostBy = async (
+  postId: Types.ObjectId | string,
+  by: number
+) => {
+  return await PostModel.findByIdAndUpdate(postId, {
+    $inc: {
+      commentNum: by,
+    },
+  }).lean();
 };
