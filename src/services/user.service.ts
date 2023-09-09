@@ -1,5 +1,5 @@
 import { BadRequest, NotFound } from "../cores/error.response";
-import { UserModel, FollowModel } from "../models";
+import { UserModel, FollowModel, PostModel, TimelineModel } from "../models";
 import * as userRepo from "../models/repositories/user.repo";
 
 interface UpdateUserInfoParams {
@@ -54,6 +54,17 @@ class UserService {
       userRepo.increaseFollowerNumByUserId(toUserId),
     ]);
 
+    const followingPosts = await PostModel.find({ userId: toUserId }).lean();
+
+    await Promise.all(
+      followingPosts.map(async (post) => {
+        return TimelineModel.create({
+          userId: fromUserId,
+          postId: post._id,
+        });
+      })
+    );
+
     return { follow: result[0] };
   }
 
@@ -68,18 +79,26 @@ class UserService {
     const followFound = await FollowModel.findOne({
       followerId: fromUserId,
       followingId: toUserId,
-    }).lean();
+    });
 
     if (!followFound) throw new BadRequest("User has not been followed!");
 
     const result = await Promise.all([
-      FollowModel.deleteOne({
-        followerId: fromUserId,
-        followingId: toUserId,
-      }),
+      followFound.deleteOne(),
       userRepo.decreaseFollowingNumByUserId(fromUserId),
       userRepo.decreaseFollowerNumByUserId(toUserId),
     ]);
+
+    const followingPosts = await PostModel.find({ userId: toUserId }).lean();
+
+    await Promise.all(
+      followingPosts.map(async (post) => {
+        return TimelineModel.deleteOne({
+          userId: fromUserId,
+          postId: post._id,
+        });
+      })
+    );
 
     return result[0];
   }

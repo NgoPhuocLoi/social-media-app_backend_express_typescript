@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(authentication);
 
-router.get("/all", asyncHandler(PostController.getAllPostsOfUser));
+router.get("/all/:userId", asyncHandler(PostController.getAllPostsOfUser));
 router.get("/:postId", asyncHandler(PostController.getOnePost));
 router.get(
   "/:postId/liked-users",

@@ -5,6 +5,6 @@ import { authentication } from "../../middlewares/auth";
 const router = express.Router();
 
 router.use(authentication);
-router.get("/", asyncHandler(TimelineController.getTimeline));
+router.get("/:userId", asyncHandler(TimelineController.getTimeline));
 
 export default router;

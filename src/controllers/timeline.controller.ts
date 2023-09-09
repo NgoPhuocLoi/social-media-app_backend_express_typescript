@@ -4,7 +4,7 @@ import TimelineService from "../services/timeline.service";
 
 class TimelineController {
   static async getTimeline(req: Request, res: Response) {
-    const userId = req.user._id;
+    const userId = req.params.userId;
     const { page = 1, limit = 20 } = req.query;
     new OKResponse({
       metadata: await TimelineService.getTimeline(userId, {

@@ -11,7 +11,7 @@ class PostController {
   }
 
   static async getAllPostsOfUser(req: Request, res: Response) {
-    const userId = req.user._id;
+    const userId = req.params.userId;
     new OKResponse({
       metadata: await PostService.getAllPostsOfUser(userId),
     }).send(res);
